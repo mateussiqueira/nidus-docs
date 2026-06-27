@@ -4,201 +4,166 @@ import { MemoryChart, ThroughputChart, DeploySpeedChart } from "@/components/Cha
 export default function LandingPage() {
   return (
     <div className="prose">
-      <div className="text-center mb-12">
-        <div className="mb-4">
-          <span className="badge badge-go">Go</span>{" "}
-          <span className="badge badge-rust">Rust</span>{" "}
-          <span className="badge badge-perf">Production Ready</span>
+      {/* Hero */}
+      <div style={{ marginBottom: "3rem" }}>
+        <div style={{ display: "flex", gap: "0.5rem", marginBottom: "1rem" }}>
+          <span className="badge badge-go">Go</span>
+          <span className="badge badge-rust">Rust</span>
         </div>
-
-        <h1 className="text-5xl font-extrabold tracking-tight mb-4">
-          Nidus
-        </h1>
-        <p className="text-2xl mb-8" style={{ color: "var(--muted)" }}>
+        <h1 style={{ fontSize: "2.75rem", fontWeight: 800, letterSpacing: "-0.04em", lineHeight: 1.1, marginBottom: "0.75rem" }}>
           Self-hosted deploy platform.<br />
-          Think Vercel that runs on your own machine.
+          <span style={{ color: "var(--accent)" }}>10x menor, 4x mais rápido.</span>
+        </h1>
+        <p style={{ fontSize: "1.1rem", color: "var(--fg-muted)", marginBottom: "1.5rem", lineHeight: 1.5 }}>
+          Nidus é construído em Go + Rust. Sem Node.js, sem Docker-in-Docker, sem bloat.
+          87MB de RAM total. 50K+ req/s. Roda em qualquer VPS de $5.
         </p>
-
-        <div className="flex gap-4 justify-center not-prose">
+        <div style={{ display: "flex", gap: "0.75rem" }}>
           <a
             href="/en/docs/quickstart"
-            className="px-6 py-3 rounded-lg font-semibold text-white transition"
-            style={{ background: "var(--accent)" }}
+            style={{
+              display: "inline-flex", alignItems: "center", gap: "0.4rem",
+              padding: "0.6rem 1.25rem", borderRadius: "var(--radius)",
+              background: "var(--accent)", color: "white", fontWeight: 600,
+              fontSize: "0.9rem", textDecoration: "none",
+            }}
           >
-            Get Started →
+            Começar Agora →
           </a>
           <a
             href="https://github.com/mateussiqueira/nidus"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="px-6 py-3 rounded-lg font-semibold border transition"
-            style={{ borderColor: "var(--border)" }}
+            target="_blank" rel="noopener noreferrer"
+            style={{
+              display: "inline-flex", alignItems: "center", gap: "0.4rem",
+              padding: "0.6rem 1.25rem", borderRadius: "var(--radius)",
+              border: "1px solid var(--border)", color: "var(--fg-secondary)",
+              fontWeight: 500, fontSize: "0.9rem", textDecoration: "none",
+            }}
           >
-            View on GitHub
+            GitHub
           </a>
         </div>
       </div>
 
-      <h2>The Problem</h2>
-      <p>
-        Vercel, Netlify, and Railway are great — until you hit the bill. A simple Next.js app
-        costs $20+/mo. Add a few more projects and you&apos;re paying more for hosting than your
-        actual cloud compute. Coolify solves the self-hosted part, but it
-        ships with PHP overhead, Docker-in-Docker complexity, and memory hogs.
-      </p>
-
-      <h2>The Nidus Approach</h2>
-      <p>
-        Nidus is built from scratch with <strong>Go</strong> for the control plane and <strong>Rust</strong> for the data plane.
-        No Node.js runtime overhead. No bloated containers. Just compiled binaries that
-        use 10x less memory than JavaScript alternatives.
-      </p>
-
-      <div className="not-prose grid grid-cols-3 gap-4 my-8">
-        <div className="p-4 rounded-lg border text-center" style={{ borderColor: "var(--border)" }}>
-          <div className="text-4xl font-bold mb-2" style={{ color: "#00ADD8" }}>Go</div>
-          <div className="text-sm font-semibold mb-1">Control Plane</div>
-          <div className="text-xs" style={{ color: "var(--muted)" }}>API, Auth, Webhooks, Deploy Queue</div>
-          <div className="text-xs mt-2 font-mono">~15MB RAM idle</div>
-        </div>
-        <div className="p-4 rounded-lg border text-center" style={{ borderColor: "var(--border)" }}>
-          <div className="text-4xl font-bold mb-2" style={{ color: "#CE422B" }}>Rust</div>
-          <div className="text-sm font-semibold mb-1">Data Plane</div>
-          <div className="text-xs" style={{ color: "var(--muted)" }}>Reverse Proxy, Rate Limiting, TLS</div>
-          <div className="text-xs mt-2 font-mono">50K+ req/s</div>
-        </div>
-        <div className="p-4 rounded-lg border text-center" style={{ borderColor: "var(--border)" }}>
-          <div className="text-4xl font-bold mb-2" style={{ color: "#38BDF8" }}>Next.js</div>
-          <div className="text-sm font-semibold mb-1">Dashboard</div>
-          <div className="text-xs" style={{ color: "var(--muted)" }}>Beautiful UI for managing deploys</div>
-          <div className="text-xs mt-2 font-mono">~50MB RAM</div>
-        </div>
+      {/* Quick stats */}
+      <div style={{
+        display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "1rem",
+        marginBottom: "2.5rem",
+      }}>
+        {[
+          { label: "RAM Idle", value: "87MB", sub: "vs 392MB Coolify" },
+          { label: "Throughput", value: "50K+", sub: "req/s (Rust)" },
+          { label: "Deploy", value: "3.8s", sub: "cached / 12.3s cold" },
+        ].map((stat) => (
+          <div key={stat.label} style={{
+            padding: "1rem", borderRadius: "var(--radius)",
+            border: "1px solid var(--border)", background: "var(--bg-secondary)",
+          }}>
+            <div style={{ fontSize: "0.75rem", color: "var(--fg-muted)", marginBottom: "0.25rem" }}>{stat.label}</div>
+            <div style={{ fontSize: "1.5rem", fontWeight: 700, color: "var(--fg)", letterSpacing: "-0.03em" }}>{stat.value}</div>
+            <div style={{ fontSize: "0.75rem", color: "var(--fg-muted)" }}>{stat.sub}</div>
+          </div>
+        ))}
       </div>
 
-      <h2>Why Nidus Wins</h2>
-
-      <h3>3x Less Memory</h3>
+      <h2>Por que Nidus?</h2>
       <p>
-        On the same $5 VPS, Nidus uses 87MB total while Coolify needs 392MB.
-        That means you can run 5-10 apps on the cheapest
-        VPS tier instead of 2-3.
-      </p>
-      <div className="not-prose my-8"><MemoryChart /></div>
-
-      <h3>4x More Throughput</h3>
-      <p>
-        The Rust reverse proxy handles 54,656 req/s — that&apos;s 3x more than Nginx
-        and 4x more than Traefik. Your apps get more traffic with less hardware.
-      </p>
-      <div className="not-prose my-8"><ThroughputChart /></div>
-
-      <h3>2x Faster Deploys</h3>
-      <p>
-        Cold deploy: 12.3s vs 34.2s (Coolify) or 18.7s (Vercel). Cached deploy:
-        3.8s vs 18.5s. The Go worker uses native Docker SDK — no Docker-in-Docker overhead.
-      </p>
-      <div className="not-prose my-8"><DeploySpeedChart /></div>
-
-      <h3>$5/mo Runs Everything</h3>
-      <p>
-        A $5 Hetzner CX11 (1 vCPU, 1GB RAM) runs the full Nidus stack plus 5 deployed
-        apps with 600MB RAM to spare. Coolify needs $10-15/mo minimum.
+        Vercel, Netlify e Railway são ótimos — até você ver a conta. Coolify resolve o
+        self-hosted, mas com PHP, Docker-in-Docker e alto consumo de RAM. Nidus foi
+        construído do zero com Go e Rust para ser <strong>10x mais leve</strong>.
       </p>
 
-      <h2>Comparison</h2>
+      <h3>3x Menos Memória</h3>
+      <p>No mesmo VPS de $5, Nidus usa 87MB. Coolify precisa de 392MB. Isso significa rodar 5-10 apps em vez de 2-3.</p>
+      <MemoryChart />
+
+      <h3>4x Mais Throughput</h3>
+      <p>O proxy Rust processa 54.656 req/s — 3x mais que Nginx, 4x mais que Traefik.</p>
+      <ThroughputChart />
+
+      <h3>2x Deploys Mais Rápidos</h3>
+      <p>Cold deploy em 12.3s. Deploy com cache em 3.8s. O worker Go usa Docker SDK nativo — sem Docker-in-Docker.</p>
+      <DeploySpeedChart />
+
+      <h2>Stack</h2>
       <table>
         <thead>
-          <tr>
-            <th>Feature</th>
-            <th>Vercel</th>
-            <th>Coolify</th>
-            <th>Nidus</th>
-          </tr>
+          <tr><th>Componente</th><th>Tecnologia</th><th>RAM</th></tr>
         </thead>
         <tbody>
-          <tr>
-            <td>Control Plane</td>
-            <td>Node.js</td>
-            <td>PHP/Laravel</td>
-            <td><strong>Go</strong></td>
-          </tr>
-          <tr>
-            <td>Reverse Proxy</td>
-            <td>Proprietary</td>
-            <td>Traefik</td>
-            <td><strong>Rust</strong></td>
-          </tr>
-          <tr>
-            <td>Idle RAM</td>
-            <td>N/A (cloud)</td>
-            <td>~400MB</td>
-            <td><strong>~30MB</strong></td>
-          </tr>
-          <tr>
-            <td>Deploy Speed</td>
-            <td>10-30s</td>
-            <td>30-90s</td>
-            <td><strong>5-15s</strong></td>
-          </tr>
-          <tr>
-            <td>Proxy Throughput</td>
-            <td>Unlimited ($$)</td>
-            <td>~10K req/s</td>
-            <td><strong>50K+ req/s</strong></td>
-          </tr>
-          <tr>
-            <td>Monthly Cost</td>
-            <td>$20+</td>
-            <td>Self-hosted</td>
-            <td><strong>Self-hosted</strong></td>
-          </tr>
+          <tr><td>API Server</td><td>Go</td><td>15MB</td></tr>
+          <tr><td>Reverse Proxy</td><td>Rust</td><td>8MB</td></tr>
+          <tr><td>Worker</td><td>Go</td><td>12MB</td></tr>
+          <tr><td>Dashboard</td><td>Next.js</td><td>50MB</td></tr>
+          <tr><td>Redis</td><td>—</td><td>4MB</td></tr>
+          <tr><td><strong>Total</strong></td><td></td><td><strong>~87MB</strong></td></tr>
         </tbody>
       </table>
 
-      <h2>Features</h2>
-      <ul>
-        <li><strong>Git Deploy</strong> — Push to GitHub, auto-deploy via webhook</li>
-        <li><strong>CLI Deploy</strong> — <code>nidus deploy</code> from any directory</li>
-        <li><strong>Rolling Updates</strong> — Zero-downtime deploys with health checks</li>
-        <li><strong>Custom Domains</strong> — Auto TLS with Let&apos;s Encrypt</li>
-        <li><strong>Environment Variables</strong> — Encrypted at rest</li>
-        <li><strong>Multi-Framework</strong> — Next.js, Nuxt, SvelteKit, Astro, any Dockerfile</li>
-        <li><strong>macOS App</strong> — Native SwiftUI dashboard</li>
-        <li><strong>Docker Isolation</strong> — Each app in its own container</li>
-      </ul>
+      <h2>Comparação</h2>
+      <table>
+        <thead>
+          <tr><th>Feature</th><th>Vercel</th><th>Coolify</th><th>Nidus</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Control Plane</td><td>Node.js</td><td>PHP</td><td><strong>Go</strong></td></tr>
+          <tr><td>Proxy</td><td>Proprietário</td><td>Traefik</td><td><strong>Rust</strong></td></tr>
+          <tr><td>RAM Idle</td><td>N/A</td><td>~400MB</td><td><strong>~30MB</strong></td></tr>
+          <tr><td>Deploy Speed</td><td>10-30s</td><td>30-90s</td><td><strong>5-15s</strong></td></tr>
+          <tr><td>Throughput</td><td>$$$</td><td>10K req/s</td><td><strong>50K+ req/s</strong></td></tr>
+          <tr><td>Custo/mês</td><td>$20+</td><td>Self-hosted</td><td><strong>Self-hosted</strong></td></tr>
+        </tbody>
+      </table>
 
-      <h2>Get Started in 3 Steps</h2>
+      <h2>Funcionalidades</h2>
+      <div style={{
+        display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "0.75rem",
+        marginBottom: "1.5rem",
+      }}>
+        {[
+          "Git Deploy — push no GitHub, deploy automático",
+          "CLI — `nidus deploy` de qualquer diretório",
+          "Rolling Updates — zero downtime com health checks",
+          "Domínios Customizados — TLS automático com Let's Encrypt",
+          "Variáveis de Ambiente — criptografadas",
+          "Multi-Framework — Next.js, Nuxt, SvelteKit, Astro, Dockerfile",
+          "App macOS — dashboard nativo SwiftUI",
+          "Isolamento Docker — cada app em seu container",
+        ].map((feat) => (
+          <div key={feat} style={{
+            padding: "0.6rem 0.85rem", borderRadius: "var(--radius-sm)",
+            border: "1px solid var(--border)", fontSize: "0.875rem",
+          }}>
+            {feat}
+          </div>
+        ))}
+      </div>
+
+      <h2>Comece em 3 Passos</h2>
       <CodeBlock
-        code={`# 1. Clone
-git clone https://github.com/mateussiqueira/nidus.git
+        code={`git clone https://github.com/mateussiqueira/nidus.git
 cd nidus
-
-# 2. Configure
 cp .env.example .env
 nano .env
-
-# 3. Deploy
 docker compose up -d`}
         language="bash"
         filename="terminal"
       />
 
-      <div className="text-center my-12 not-prose">
+      <div style={{ textAlign: "center", marginTop: "3rem" }}>
         <a
           href="/en/docs/quickstart"
-          className="px-8 py-4 rounded-lg font-bold text-lg text-white inline-block"
-          style={{ background: "var(--accent)" }}
+          style={{
+            display: "inline-flex", alignItems: "center", gap: "0.4rem",
+            padding: "0.7rem 1.5rem", borderRadius: "var(--radius)",
+            background: "var(--accent)", color: "white", fontWeight: 600,
+            fontSize: "1rem", textDecoration: "none",
+          }}
         >
-          Start Deploying Now →
+          Comece a Deployar Agora →
         </a>
-        <p className="text-sm mt-4" style={{ color: "var(--muted)" }}>
-          Free and open source. No vendor lock-in.
-        </p>
-      </div>
-
-      <div className="text-center" style={{ color: "var(--muted)" }}>
-        <p className="text-sm">
-          Built with Go + Rust by <a href="https://github.com/mateussiqueira">Mateus Siqueira</a>
+        <p style={{ fontSize: "0.8rem", color: "var(--fg-muted)", marginTop: "0.75rem" }}>
+          Gratuito e open source. Construído com Go + Rust.
         </p>
       </div>
     </div>
