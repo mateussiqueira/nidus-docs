@@ -6,10 +6,6 @@ export default function PTLandingPage() {
     <div className="prose">
       {/* Hero */}
       <div style={{ marginBottom: "3rem" }}>
-        <div style={{ display: "flex", gap: "0.5rem", marginBottom: "1rem" }}>
-          <span className="badge badge-go">Go</span>
-          <span className="badge badge-rust">Rust</span>
-        </div>
         <h1 style={{ fontSize: "2.75rem", fontWeight: 800, letterSpacing: "-0.04em", lineHeight: 1.1, marginBottom: "0.75rem" }}>
           Plataforma de deploy self-hosted.<br />
           <span style={{ color: "var(--accent)" }}>10x mais leve, 4x mais rápido.</span>
