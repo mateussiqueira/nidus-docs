@@ -1,5 +1,4 @@
 import CodeBlock from "@/components/CodeBlock";
-import { MemoryChart, ThroughputChart, DeploySpeedChart, CostChart } from "@/components/Charts";
 
 export default function PTLandingPage() {
   return (
@@ -7,12 +6,12 @@ export default function PTLandingPage() {
       {/* Hero */}
       <div style={{ marginBottom: "3rem" }}>
         <h1 style={{ fontSize: "2.75rem", fontWeight: 800, letterSpacing: "-0.04em", lineHeight: 1.1, marginBottom: "0.75rem" }}>
-          Plataforma de deploy self-hosted.<br />
-          <span style={{ color: "var(--accent)" }}>10x mais leve, 4x mais rápido.</span>
+          Seu próprio painel de infraestrutura.<br />
+          <span style={{ color: "var(--accent)" }}>Sem mensalidade. Sem vendor lock-in.</span>
         </h1>
         <p style={{ fontSize: "1.1rem", color: "var(--fg-muted)", marginBottom: "1.5rem", lineHeight: 1.5 }}>
-          Nidus é construído em Go + Rust. Sem Node.js, sem Docker-in-Docker, sem bloat.
-          87MB de RAM total. 50K+ req/s. Roda em qualquer VPS de $5.
+          Nidus substitui Vercel, Datadog, Cloudflare e New Relic — tudo rodando na sua máquina.
+          Dashboard, logs, métricas, rate limiting, deploy automático. Grátis.
         </p>
         <div style={{ display: "flex", gap: "0.75rem" }}>
           <a
@@ -41,15 +40,15 @@ export default function PTLandingPage() {
         </div>
       </div>
 
-      {/* Stats cards */}
+      {/* Stats */}
       <div style={{
         display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "1rem",
         marginBottom: "2.5rem",
       }}>
         {[
-          { label: "RAM Idle", value: "87MB", sub: "vs 392MB Coolify" },
-          { label: "Throughput", value: "50K+", sub: "req/s (proxy Rust)" },
-          { label: "Deploy", value: "3.8s", sub: "com cache / 12.3s cold" },
+          { label: "RAM Total", value: "87MB", sub: "Stack completo em idle" },
+          { label: "Ferramentas", value: "8 em 1", sub: "Deploy + Monitoramento + Logs" },
+          { label: "Preço", value: "Grátis", sub: "Self-hosted. Sem assinatura." },
         ].map((stat) => (
           <div key={stat.label} style={{
             padding: "1rem", borderRadius: "var(--radius)",
@@ -64,157 +63,97 @@ export default function PTLandingPage() {
 
       <h2>O Problema</h2>
       <p>
-        Vercel, Netlify e Railway são ótimos — até você ver a conta. Um app Next.js simples
-        custa $20+/mês. Adicione mais alguns projetos e você paga mais de hosting do que
-        de cloud compute real.
+        Para rodar um projeto hoje, você precisa de: Vercel ou Coolify para deploy, Datadog ou New Relic 
+        para métricas, Logtail ou Papertrail para logs, Cloudflare para rate limiting e proteção, 
+        Uptime Robot para health checks, Grafana para dashboard. São <strong>6+ ferramentas diferentes</strong>,
+        cada uma com sua própria assinatura, sua própria interface, sua própria complexidade.
       </p>
       <p>
-        Coolify e Conecthu resolvem o self-hosted, mas empilham camadas: PHP/Laravel rodando
-        Docker-in-Docker que orquestra Traefik que gerencia containers. O resultado são mais
-        de 300MB de RAM só pra manter a plataforma rodando — antes mesmo de deployar qualquer app.
+        Um VPS resolve parte do problema, mas configurar nginx, prometheus, grafana, loki, certbot,
+        fail2ban, docker-compose e manter tudo atualizado é um projeto por si só. E quando você tem
+        mais de um projeto, a complexidade multiplica.
       </p>
       <p>
-        E esse overhead não é gratuito: cada camada extra adiciona latência, pontos de falha
-        e complexidade operacional. Docker-in-Docker, em particular, é uma fonte conhecida de
-        problemas: builds que falham sem motivo aparente, consumo extra de CPU e disco, e uma
-        sensação constante de que algo vai quebrar.
+        Nidus existe para resolver isso. Rodando na sua máquina — Mac, Linux, VPS — ele unifica
+        deploy, monitoramento, logs, rate limiting e dashboard em um único binário.
       </p>
 
-      <h2>A Abordagem Nidus</h2>
-      <p>
-        Nidus foi construído do zero com <strong>Go</strong> para o control plane e
-        <strong>Rust</strong> para o data plane. Sem runtime Node.js, sem PHP, sem
-        Docker-in-Docker. Dois binários compilados que somados ocupam menos de 20MB de RAM.
-      </p>
-      <p>
-        A filosofia é simples: cada componente deve fazer uma coisa e fazer bem. O proxy em
-        Rust roteia tráfego com latência mínima. O servidor em Go gerencia deploys e
-        autenticação. O worker em Go constrói imagens Docker chamando a API nativa — sem
-        overlays desnecessários.
-      </p>
-
-      <h2>Por que Nidus Vence</h2>
-
-      <h3>3x Menos Memória</h3>
-      <p>
-        No mesmo VPS de $5, Nidus usa 87MB totais. Coolify precisa de 392MB — e isso sem
-        contar os apps deployados. Com Nidus, seu VPS de $5 roda o stack completo da
-        plataforma <em>mais</em> 5-10 aplicações. Com Coolify, você chega no limite de RAM
-        depois de 2 ou 3 apps.
-      </p>
-      <MemoryChart />
-
-      <h3>4x Mais Throughput</h3>
-      <p>
-        O proxy em Rust processa 54.656 req/s em um VPS de $5. Isso é 3x mais que Nginx
-        (48.234 req/s) e 4x mais que Traefik (32.456 req/s). A diferença vem do Tokio
-        (runtime async do Rust) combinado com zero garbage collection — não há pausas,
-        não há overhead, apenas throughput bruto.
-      </p>
-      <ThroughputChart />
-
-      <h3>2x Deploys Mais Rápidos</h3>
-      <p>
-        Deploy cold em 12.3s — contra 34.2s do Coolify e 18.7s do Vercel. Deploy com cache
-        em 3.8s. A diferença principal é o uso do Docker SDK nativo (Go) em vez de
-        Docker-in-Docker, que elimina uma camada inteira de I/O e syscalls.
-      </p>
-      <DeploySpeedChart />
-
-      <h3>$5/mês Roda Tudo</h3>
-      <p>
-        Um Hetzner CX11 de $5/mês (1 vCPU, 1GB RAM, 40GB NVMe) roda o stack completo do
-        Nidus mais 5 aplicações com 600MB de RAM sobrando. Coolify no mesmo hardware
-        começa a dar OOM kill na terceira aplicação.
-      </p>
-
-      <h2>Stack</h2>
-      <table>
-        <thead>
-          <tr><th>Componente</th><th>Tecnologia</th><th>RAM Idle</th><th>Função</th></tr>
-        </thead>
-        <tbody>
-          <tr><td>API Server</td><td><span className="badge badge-go">Go</span></td><td>15MB</td><td>REST API, autenticação, webhooks</td></tr>
-          <tr><td>Reverse Proxy</td><td><span className="badge badge-rust">Rust</span></td><td>8MB</td><td>Rate limiting, TLS, load balance</td></tr>
-          <tr><td>Worker</td><td><span className="badge badge-go">Go</span></td><td>12MB</td><td>Build Docker, deploy, health check</td></tr>
-          <tr><td>Dashboard</td><td>Next.js</td><td>50MB</td><td>Interface web de gerenciamento</td></tr>
-          <tr><td>Redis</td><td>—</td><td>4MB</td><td>Job queue, sessão, cache</td></tr>
-          <tr><td><strong>Total</strong></td><td></td><td><strong>~87MB</strong></td><td></td></tr>
-        </tbody>
-      </table>
-
-      <h2>Comparação</h2>
-      <table>
-        <thead>
-          <tr><th>Feature</th><th>Vercel</th><th>Coolify</th><th>Nidus</th></tr>
-        </thead>
-        <tbody>
-          <tr><td>Control Plane</td><td>Node.js</td><td>PHP/Laravel</td><td><strong>Go</strong></td></tr>
-          <tr><td>Reverse Proxy</td><td>Proprietário</td><td>Traefik</td><td><strong>Rust</strong></td></tr>
-          <tr><td>RAM Idle</td><td>N/A (cloud)</td><td>~400MB</td><td><strong>~30MB</strong></td></tr>
-          <tr><td>Deploy Speed</td><td>10-30s</td><td>30-90s</td><td><strong>5-15s</strong></td></tr>
-          <tr><td>Throughput</td><td>Ilimitado ($$)</td><td>~10K req/s</td><td><strong>50K+ req/s</strong></td></tr>
-          <tr><td>Docker-in-Docker</td><td>N/A</td><td>Sim</td><td><strong>Não</strong></td></tr>
-          <tr><td>Binário Único</td><td>N/A</td><td>Não</td><td><strong>Sim (Go)</strong></td></tr>
-          <tr><td>Proxy Dinâmico</td><td>N/A</td><td>Não</td><td><strong>Sim (API)</strong></td></tr>
-          <tr><td>Custo Mensal</td><td>$20+</td><td>Self-hosted</td><td><strong>Self-hosted</strong></td></tr>
-        </tbody>
-      </table>
-
-      <h2>Funcionalidades</h2>
+      <h2>O Que o Nidus Substitui</h2>
       <div style={{
         display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "0.75rem",
         marginBottom: "1.5rem",
       }}>
         {[
-          "Git Deploy — push no GitHub, deploy automático via webhook",
-          "CLI Deploy — `nidus deploy` de qualquer diretório",
-          "Rolling Updates — zero downtime com health checks",
-          "Domínios Customizados — TLS automático com Let's Encrypt",
-          "Variáveis de Ambiente — criptografadas em repouso",
-          "Multi-Framework — Next.js, Nuxt, SvelteKit, Astro, qualquer Dockerfile",
-          "App macOS — dashboard nativo SwiftUI",
-          "Isolamento Docker — cada app em seu próprio container",
-        ].map((feat) => (
-          <div key={feat} style={{
-            padding: "0.6rem 0.85rem", borderRadius: "var(--radius-sm)",
+          ["Vercel / Coolify", "Deploy de aplicações com git push", "✅"],
+          ["Datadog / New Relic", "Métricas em tempo real dos seus apps", "✅"],
+          ["Logtail / Papertrail", "Logs centralizados com busca", "✅"],
+          ["Cloudflare WAF", "Rate limiting e proteção contra bots", "✅"],
+          ["Uptime Robot", "Health checks e alertas", "✅"],
+          ["Grafana + Prometheus", "Dashboard unificado", "✅"],
+          ["Let's Encrypt", "TLS automático para seus domínios", "✅"],
+          ["Jenkins / GitHub Actions", "Pipeline de CI/CD integrado", "✅"],
+        ].map(([tool, what, status]) => (
+          <div key={tool} style={{
+            padding: "0.75rem 1rem", borderRadius: "var(--radius-sm)",
             border: "1px solid var(--border)", fontSize: "0.875rem",
+            display: "flex", justifyContent: "space-between", alignItems: "center",
           }}>
-            {feat}
+            <div>
+              <div style={{ fontWeight: 600, color: "var(--fg)", marginBottom: "0.15rem" }}>{tool}</div>
+              <div style={{ fontSize: "0.8rem", color: "var(--fg-muted)" }}>{what}</div>
+            </div>
+            <span style={{ fontSize: "1.1rem" }}>{status}</span>
           </div>
         ))}
       </div>
 
-      <h2>Roadmap</h2>
+      <h2>Dashboard</h2>
       <p>
-        Nidus está em alpha, mas já é funcional para uso pessoal e projetos pequenos.
-        O que está por vir:
+        O Nidus vem com um dashboard nativo (Next.js) que mostra tudo que você precisa
+        em um só lugar:
       </p>
+      <ul>
+        <li><strong>Projetos</strong> — lista de todas as aplicações deployadas, status, recursos</li>
+        <li><strong>Métricas</strong> — CPU, RAM, requisições por segundo, latência p95/p99</li>
+        <li><strong>Logs</strong> — busca centralizada com filtros por projeto, nível, data</li>
+        <li><strong>Tráfego</strong> — número de requisições, bandwidth, top rotas</li>
+        <li><strong>Custo</strong> — estimativa de gasto por projeto baseado em recursos usados</li>
+        <li><strong>Alertas</strong> — health checks, rate limit excedido, build falhou</li>
+      </ul>
+
+      <h2>Proteção Empresarial</h2>
+      <p>
+        Nidus não é só um deployer. Ele é um proxy de borda completo construído
+        em Rust que protege suas aplicações contra ataques comuns:
+      </p>
+      <ul>
+        <li><strong>Rate limiting distribuído</strong> — baseado em Redis, compartilhado entre instâncias</li>
+        <li><strong>Proteção contra bots</strong> — detecção de padrões de scraping e DDoS</li>
+        <li><strong>TLS 1.3</strong> — terminação SSL com Let's Encrypt automático</li>
+        <li><strong>Firewall de requisições</strong> — bloqueio por IP, user-agent, headers</li>
+        <li><strong>Health checks ativos</strong> — remove upstreams com falha automaticamente</li>
+      </ul>
+
+      <h2>Versão Gratuita vs Paga</h2>
       <div style={{
-        display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "1rem",
+        display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "1rem",
         marginBottom: "1.5rem",
       }}>
         <div style={{
           padding: "1rem", borderRadius: "var(--radius)",
           border: "1px solid var(--border)", background: "var(--bg-secondary)",
         }}>
-          <div style={{ fontWeight: 700, fontSize: "0.85rem", marginBottom: "0.5rem" }}>🧪 Alpha (Atual)</div>
-          <ul style={{ fontSize: "0.8rem", paddingLeft: "1rem", margin: 0 }}>
-            <li>Deploy via Git</li>
-            <li>CLI + API</li>
-            <li>Proxy dinâmico</li>
+          <div style={{ fontWeight: 700, fontSize: "0.9rem", marginBottom: "0.5rem", color: "var(--fg)" }}>
+            🆓 Gratuita (Sempre)
+          </div>
+          <ul style={{ fontSize: "0.8rem", paddingLeft: "1rem", margin: 0, color: "var(--fg-secondary)" }}>
+            <li>Deploy via Git + CLI</li>
+            <li>Dashboard com métricas</li>
+            <li>Logs centralizados</li>
+            <li>Rate limiting + TLS</li>
             <li>Health checks</li>
-          </ul>
-        </div>
-        <div style={{
-          padding: "1rem", borderRadius: "var(--radius)",
-          border: "1px solid var(--border)", background: "var(--bg-secondary)",
-        }}>
-          <div style={{ fontWeight: 700, fontSize: "0.85rem", marginBottom: "0.5rem" }}>🔧 Beta (Q3 2026)</div>
-          <ul style={{ fontSize: "0.8rem", paddingLeft: "1rem", margin: 0 }}>
-            <li>Dashboard web</li>
-            <li>Métricas em tempo real</li>
             <li>Rolling updates</li>
+            <li>Domínios customizados</li>
             <li>App macOS</li>
           </ul>
         </div>
@@ -222,26 +161,58 @@ export default function PTLandingPage() {
           padding: "1rem", borderRadius: "var(--radius)",
           border: "1px solid var(--border)", background: "var(--bg-secondary)",
         }}>
-          <div style={{ fontWeight: 700, fontSize: "0.85rem", marginBottom: "0.5rem" }}>🚀 GA (Q4 2026)</div>
-          <ul style={{ fontSize: "0.8rem", paddingLeft: "1rem", margin: 0 }}>
-            <li>Multi-node</li>
+          <div style={{ fontWeight: 700, fontSize: "0.9rem", marginBottom: "0.5rem", color: "var(--fg)" }}>
+            💎 Paga (Q1 2027)
+          </div>
+          <ul style={{ fontSize: "0.8rem", paddingLeft: "1rem", margin: 0, color: "var(--fg-secondary)" }}>
+            <li>Multi-node (cluster)</li>
             <li>Auto-scaling</li>
-            <li>Observabilidade</li>
+            <li>Observabilidade avançada</li>
+            <li>Alertas por e-mail/Slack/Discord</li>
+            <li>RBAC (múltiplos usuários)</li>
             <li>Template marketplace</li>
+            <li>Audit logs</li>
+            <li>Suporte prioritário</li>
           </ul>
         </div>
       </div>
 
-      <h2>Comece em 3 Passos</h2>
+      <h2>Roda em Qualquer Lugar</h2>
+      <p>
+        Nidus roda no Mac (desenvolvimento local) e Linux (produção). No Mac,
+        você pode testar seus deploys localmente antes de subir para produção.
+        No Linux (VPS, bare metal, Raspberry Pi), ele roda 24/7 consumindo menos de 100MB de RAM.
+      </p>
       <CodeBlock
-        code={`git clone https://github.com/mateussiqueira/nidus.git
-cd nidus
-cp .env.example .env
-nano .env
-docker compose up -d`}
+        code={`# Mac (desenvolvimento local)
+git clone https://github.com/mateussiqueira/nidus.git
+cd nidus && docker compose up -d
+open http://localhost:3001
+
+# Linux (produção em VPS)
+ssh usuario@meu-vps
+git clone https://github.com/mateussiqueira/nidus.git
+cd nidus && docker compose up -d
+# Pronto. Dashboard em http://meu-vps:3001`}
         language="bash"
         filename="terminal"
       />
+
+      <h2>Tudo que Você Precisa, sem Pagar</h2>
+      <table>
+        <thead>
+          <tr><th>Ferramenta</th><th>Custo Mensal</th><th>Nidus</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Vercel Pro</td><td>$20/mês</td><td><strong>Grátis</strong></td></tr>
+          <tr><td>Datadog (infra)</td><td>$15/mês</td><td><strong>Grátis</strong></td></tr>
+          <tr><td>Logtail</td><td>$15/mês</td><td><strong>Grátis</strong></td></tr>
+          <tr><td>Cloudflare Pro</td><td>$20/mês</td><td><strong>Grátis</strong></td></tr>
+          <tr><td>Uptime Robot</td><td>$7/mês</td><td><strong>Grátis</strong></td></tr>
+          <tr><td>New Relic</td><td>$15/mês</td><td><strong>Grátis</strong></td></tr>
+          <tr><td><strong>Total</strong></td><td><strong>$92/mês</strong></td><td><strong>$0</strong></td></tr>
+        </tbody>
+      </table>
 
       <div style={{ textAlign: "center", marginTop: "3rem" }}>
         <a
@@ -253,10 +224,10 @@ docker compose up -d`}
             fontSize: "1rem", textDecoration: "none",
           }}
         >
-          Comece a Deployar Agora →
+          Comece Agora →
         </a>
         <p style={{ fontSize: "0.8rem", color: "var(--fg-muted)", marginTop: "0.75rem" }}>
-          Gratuito e open source. Construído com Go + Rust. Sem vendor lock-in.
+          Gratuito e open source. Roda em Mac, Linux, VPS. Sem vendor lock-in.
         </p>
       </div>
     </div>
